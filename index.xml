@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>DejaQ</title>
+    <link>http://dejaq.io/</link>
+    <description>Recent content on DejaQ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="http://dejaq.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>DejaQ</title>
+      <link>http://dejaq.io/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://dejaq.io/</guid>
+      <description>Author: Adrian Bledea-Georgescu
+Mainteners: Mihai Oprea, Sandu Samyr David
+Contributors: Radu Viorel Cosnita, Diana Maftei, Daniel Coman
+Abstract DejaQ is a distributed messaging queue built for high-throughput persistent messages that have an arbitrary or time-based order. It allows a point-to-point scheduled message-oriented async communication for loosely coupled systems in time and space (reference). Its main use case is to allow consumers to process messages that are produced out of order (the messages are consumed in a different order than they were produced).</description>
+    </item>
+    
+  </channel>
+</rss>

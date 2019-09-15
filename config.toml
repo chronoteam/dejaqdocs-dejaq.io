@@ -2,6 +2,7 @@ baseURL = "http://dejaq.io/"
 languageCode = "en-us"
 title = "DejaQ"
 theme = "hyde"
+googleanalytics = "UA-147978251-1"
 
 [params]
     description = "The public official website for DejaQ"

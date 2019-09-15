@@ -1,0 +1,8 @@
+baseURL = "http://dejaq.io/"
+languageCode = "en-us"
+title = "DejaQ"
+theme = "hyde"
+
+[params]
+    description = "The public official website for DejaQ"
+    logo = "dejaq-logo1-white.png"

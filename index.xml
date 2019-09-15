@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>DejaQ</title>
-    <link>http://dejaq.io/</link>
+    <link>https://dejaq.io/</link>
     <description>Recent content on DejaQ</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     
-	<atom:link href="http://dejaq.io/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://dejaq.io/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>DejaQ</title>
-      <link>http://dejaq.io/</link>
+      <link>https://dejaq.io/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://dejaq.io/</guid>
+      <guid>https://dejaq.io/</guid>
       <description>Author: Adrian Bledea-Georgescu
 Mainteners: Mihai Oprea, Sandu Samyr David
 Contributors: Radu Viorel Cosnita, Diana Maftei, Daniel Coman

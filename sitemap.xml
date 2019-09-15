@@ -4,12 +4,10 @@
   
   <url>
     <loc>http://dejaq.io/categories/</loc>
-    <priority>0</priority>
   </url>
   
   <url>
     <loc>http://dejaq.io/</loc>
-    <priority>0</priority>
   </url>
   
   <url>
@@ -18,7 +16,6 @@
   
   <url>
     <loc>http://dejaq.io/tags/</loc>
-    <priority>0</priority>
   </url>
   
 </urlset>

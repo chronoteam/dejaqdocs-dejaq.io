@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>DejaQ</title>
+  <title>DejaQ &middot; DejaQ</title>
 
   
   <link type="text/css" rel="stylesheet" href="https://dejaq.io/css/print.css" media="print">
@@ -23,7 +23,6 @@
   <link rel="shortcut icon" href="/favicon.png">
 
   
-  <link href="https://dejaq.io/index.xml" rel="alternate" type="application/rss+xml" title="DejaQ" />
   
 </head>
 
@@ -34,27 +33,26 @@
       <img src="dejaq-logo1-white.png" alt="dejaq-logo1-white.png" height="200" width="200" align="center">
       <a href="https://dejaq.io/"><h1>DejaQ</h1></a>
       <p class="lead">
-       The official DejaQ website 
+       An arbitrary messaging queue. 
       </p>
     </div>
 
-    <nav>
-      <ul class="sidebar-nav">
-        <li><a href="https://dejaq.io/">Home</a> </li>
-        
-      </ul>
-    </nav>
+
+
+
+
+
+
+
+
 
     <p>&copy; 2019. All rights reserved. </p>
   </div>
 </aside>
 
     <main class="content container">
-    <div class="posts">
-<article class="post">
-  <h1 class="post-title">
-    <a href="https://dejaq.io/">DejaQ</a>
-  </h1>
+    <div class="post">
+  <h1>DejaQ</h1>
   
 
 <p>Author: Adrian Bledea-Georgescu</p>
@@ -100,7 +98,7 @@
 <h2 id="design-principles">Design principles</h2>
 
 <ol>
-<li>Consistency: although it conflicts with the performance and accuracy, we have to do atomic and persistent write operations (ACID) that leads to “Strong-consistency” at the storage level and stale data detection at the broker and SDK level. Scheduled messages are usually one time transactions and we have to make sure there are no duplicates, misses or lost data. DejaQ is a C (in CAP). This choice will harm the High-Availability and write-performance of the system.</li>
+<li>Consistency: although it conflicts with the performance and accuracy, we have to do atomic and persistent write operations (ACID) that leads to “Strong-consistency” at the storage level and stale data detection at the broker and driver level. Scheduled messages are usually one time transactions and we have to make sure there are no duplicates, misses or lost data. DejaQ is a C (in CAP). This choice will harm the High-Availability and write-performance of the system.</li>
 <li>Accuracy: (precision on the timeline) we strive to deliver the message to a consumer at the exact Timestamp the producer stated. (hopefully at a ms delay, but never before)</li>
 <li>Scalability: all layers will scale horizontally: producers, storage, brokers and consumers.</li>
 <li>Reliability: the brokers especially have to withstand and be available for as long as they could. Partial degradation will be applied to more levels. This leads to a mandatory high quality of the system, from design to recovery scenarios and failovers.</li>
@@ -121,7 +119,7 @@
 
 <p>The messages are spread over a timeline based on their timestamps. Producers choose the initial position of the message on the timeline (in the future) and will have the absolute right on the messagethey generate for its entire lifespan (move, delete). (the payload is immutable but the metadata is not).</p>
 
-<p>The broker will push all the available messages (that have the timestamp property in the past&lt;= NOW) to a free and healthy consumer. The broker has the shared responsibility with the SDK to deliver the messages to a consumer at the exact Timestamp (or after, hopefully with a minimum single ms digit latency), but never before.</p>
+<p>The broker will push all the available messages (that have the timestamp property in the past&lt;= NOW) to a free and healthy consumer. The broker has the shared responsibility with the driver to deliver the messages to a consumer at the exact Timestamp (or after, hopefully with a minimum single ms digit latency), but never before.</p>
 
 <p>To achieve the delivery guarantee we are building a Lease (lock) system, that is “naturally” achieved using the fact that only the “past” messages are available to process, so a lease will move the message in the future, achieving a Timeout and a Lease at the same time.</p>
 
@@ -143,7 +141,7 @@
 
 <p>Our final goal is to build a custom storage, that will allow us to achieve the maximum performance. But for now, we scoped out this challenge as it exceeds our available resources.</p>
 
-<p>Keeping this in mind, we will support multiple external clusters of storage out of the box, for now, we consider maintaining official SDKs for:</p>
+<p>Keeping this in mind, we will support multiple external clusters of storage out of the box, for now, we consider maintaining official plugins for:</p>
 
 <ul>
 <li>In-memory - to test or achieve maximum performance by losing persistence</li>
@@ -168,9 +166,9 @@
 <p>There are 5 main actors in the system:</p>
 
 <ol>
-<li>The user - that uses an SDK, or the broker directly, contains your business logic</li>
+<li>The user - that uses a driver, or the broker directly, contains your business logic</li>
 <li>The broker (the main element of the system)</li>
-<li>The client-broker clients, (SDK) helper functions and instances to call the broker</li>
+<li>The client-broker clients, (drivers) helper functions and instances to call the broker</li>
 <li>The storage (hidden for the user)</li>
 <li>Synchronization service (naming, sync, configuration)</li>
 </ol>
@@ -199,21 +197,22 @@
 
 <h2 id="implementation">Implementation</h2>
 
-<p>We are confident that Go is a good solution to this problem. The broker, tests and the first official SDK will be written in Go. Later on, we will have official support for Java and Python clients, with the help of the community.</p>
+<p>We are confident that Go is a good solution to this problem. The broker, tests and the first official driver will be written in Go. Later on, we will have official support for Java and Python clients, with the help of the community.</p>
 
 <p>The first version will contain only the Timeline implementation and a minimal broker.</p>
 
-<p>Broker-SDK protocol will be binary, but instead of building a custom implementation we will use a battle-tested combination, more exactly FlatBuffers on gRPC.io. FlatBuffers is similar to Protocol Buffers but it allows zero-memory decoding of the messages, resulting in a better performance. Already available features of the gRPC framework like multiplexing and streaming will allow us to build a more robust product and focus more on our logic and less on plumbing.</p>
+<p>Broker-Client protocol will be binary, but instead of building a custom implementation we will use a battle-tested combination, more exactly FlatBuffers on gRPC.io. FlatBuffers is similar to Protocol Buffers but it allows zero-memory decoding of the messages, resulting in a better performance. Already available features of the gRPC framework like multiplexing and streaming will allow us to build a more robust product and focus more on our logic and less on plumbing.</p>
 
-<p>Observability is another important aspect of DejaQ, the SDK will be as transparent as it can be, and the Broker will expose all its inner metrics in a Prometheus-compatible format.</p>
+<p>Observability is another important aspect of DejaQ, the driver will be as transparent as it can be, and the Broker will expose all its inner metrics in a Prometheus-compatible format.</p>
 
 <h2 id="conclusion">Conclusion</h2>
 
 <p>We are embarking on a long and harsh journey. If you love technical challenges and distributed systems please join us! We are looking for help at all chapters, from owners to testers, from infrastructure to users that need this kind of product.
 Contact us: <a href="https://github.com/chronoteam">https://github.com/chronoteam</a> or adrian@coder.today</p>
 
-</article>
 </div>
+
+
     </main>
 
     
@@ -222,6 +221,15 @@ var doNotTrack = false;
 if (!doNotTrack) {
 	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
 	ga('create', 'UA-147978251-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>
+1', 'auto');
 	
 	ga('send', 'pageview');
 }

@@ -5,5 +5,5 @@ theme = "hyde"
 googleanalytics = "UA-147978251-1"
 
 [params]
-    description = "The official DejaQ website"
+    description = "An arbitrary messaging queue."
     logo = "dejaq-logo1-white.png"

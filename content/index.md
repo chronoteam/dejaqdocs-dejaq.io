@@ -44,7 +44,7 @@ DejaQ can also be used between 2 other messaging queues (eg: 2 kafka topics) to 
 Design principles
 -----------------
 
-1.  Consistency: although it conflicts with the performance and accuracy, we have to do atomic and persistent write operations (ACID) that leads to “Strong-consistency” at the storage level and stale data detection at the broker and SDK level. Scheduled messages are usually one time transactions and we have to make sure there are no duplicates, misses or lost data. DejaQ is a C (in CAP). This choice will harm the High-Availability and write-performance of the system.
+1.  Consistency: although it conflicts with the performance and accuracy, we have to do atomic and persistent write operations (ACID) that leads to “Strong-consistency” at the storage level and stale data detection at the broker and driver level. Scheduled messages are usually one time transactions and we have to make sure there are no duplicates, misses or lost data. DejaQ is a C (in CAP). This choice will harm the High-Availability and write-performance of the system.
 2.  Accuracy: (precision on the timeline) we strive to deliver the message to a consumer at the exact Timestamp the producer stated. (hopefully at a ms delay, but never before)
 3.  Scalability: all layers will scale horizontally: producers, storage, brokers and consumers.
 4.  Reliability: the brokers especially have to withstand and be available for as long as they could. Partial degradation will be applied to more levels. This leads to a mandatory high quality of the system, from design to recovery scenarios and failovers.
@@ -65,7 +65,7 @@ We consider that it is better to move the “load” at the produce time, and in
 
 The messages are spread over a timeline based on their timestamps. Producers choose the initial position of the message on the timeline (in the future) and will have the absolute right on the messagethey generate for its entire lifespan (move, delete). (the payload is immutable but the metadata is not).
 
-The broker will push all the available messages (that have the timestamp property in the past<= NOW) to a free and healthy consumer. The broker has the shared responsibility with the SDK to deliver the messages to a consumer at the exact Timestamp (or after, hopefully with a minimum single ms digit latency), but never before.
+The broker will push all the available messages (that have the timestamp property in the past<= NOW) to a free and healthy consumer. The broker has the shared responsibility with the driver to deliver the messages to a consumer at the exact Timestamp (or after, hopefully with a minimum single ms digit latency), but never before.
 
 To achieve the delivery guarantee we are building a Lease (lock) system, that is “naturally” achieved using the fact that only the “past” messages are available to process, so a lease will move the message in the future, achieving a Timeout and a Lease at the same time.
 
@@ -88,7 +88,7 @@ Although we avoided having a single point of failures and “masters” by desig
 
 Our final goal is to build a custom storage, that will allow us to achieve the maximum performance. But for now, we scoped out this challenge as it exceeds our available resources.
 
-Keeping this in mind, we will support multiple external clusters of storage out of the box, for now, we consider maintaining official SDKs for:
+Keeping this in mind, we will support multiple external clusters of storage out of the box, for now, we consider maintaining official plugins for:
 
 *   In-memory - to test or achieve maximum performance by losing persistence
 *   Redis - to serve non-persistent but high-volume topics
@@ -109,9 +109,9 @@ System architecture
 
 There are 5 main actors in the system:
 
-1.  The user - that uses an SDK, or the broker directly, contains your business logic
+1.  The user - that uses a driver, or the broker directly, contains your business logic
 2.  The broker (the main element of the system)
-3.  The client-broker clients, (SDK) helper functions and instances to call the broker
+3.  The client-broker clients, (drivers) helper functions and instances to call the broker
 4.  The storage (hidden for the user)
 5.  Synchronization service (naming, sync, configuration)
 
@@ -136,13 +136,13 @@ We learned from other messaging brokers limitations and we will cover the follow
 Implementation
 --------------
 
-We are confident that Go is a good solution to this problem. The broker, tests and the first official SDK will be written in Go. Later on, we will have official support for Java and Python clients, with the help of the community.
+We are confident that Go is a good solution to this problem. The broker, tests and the first official driver will be written in Go. Later on, we will have official support for Java and Python clients, with the help of the community.
 
 The first version will contain only the Timeline implementation and a minimal broker.
 
-Broker-SDK protocol will be binary, but instead of building a custom implementation we will use a battle-tested combination, more exactly FlatBuffers on gRPC.io. FlatBuffers is similar to Protocol Buffers but it allows zero-memory decoding of the messages, resulting in a better performance. Already available features of the gRPC framework like multiplexing and streaming will allow us to build a more robust product and focus more on our logic and less on plumbing.
+Broker-Client protocol will be binary, but instead of building a custom implementation we will use a battle-tested combination, more exactly FlatBuffers on gRPC.io. FlatBuffers is similar to Protocol Buffers but it allows zero-memory decoding of the messages, resulting in a better performance. Already available features of the gRPC framework like multiplexing and streaming will allow us to build a more robust product and focus more on our logic and less on plumbing.
 
-Observability is another important aspect of DejaQ, the SDK will be as transparent as it can be, and the Broker will expose all its inner metrics in a Prometheus\-compatible format.
+Observability is another important aspect of DejaQ, the driver will be as transparent as it can be, and the Broker will expose all its inner metrics in a Prometheus\-compatible format.
 
 Conclusion
 ----------

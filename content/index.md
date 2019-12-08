@@ -148,5 +148,5 @@ Conclusion
 ----------
 
 We are embarking on a long and harsh journey. If you love technical challenges and distributed systems please join us! We are looking for help at all chapters, from owners to testers, from infrastructure to users that need this kind of product.
-Contact us: https://github.com/chronoteam or adrian@coder.today
+Contact us: https://github.com/dejaq or adrian@coder.today
 

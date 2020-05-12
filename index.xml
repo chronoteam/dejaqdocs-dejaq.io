@@ -18,7 +18,7 @@
       <guid>https://dejaq.io/</guid>
       <description>Author: Adrian Bledea-Georgescu
 Mainteners: Mihai Oprea, Sandu Samyr David
-Contributors: Radu Viorel Cosnita, Diana Maftei, Daniel Coman
+Contributors: Radu Viorel Cosnita, Diana Maftei, Daniel Coman, Silviu Badea
 Abstract DejaQ is a distributed messaging queue built for high-throughput persistent messages that have an arbitrary or time-based order. It allows a point-to-point scheduled message-oriented async communication for loosely coupled systems in time and space (reference). Its main use case is to allow consumers to process messages that are produced out of order (the messages are consumed in a different order than they were produced).</description>
     </item>
     
